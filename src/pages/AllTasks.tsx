@@ -1,7 +1,8 @@
 import { useState, useMemo } from "react";
 import { TaskCard } from "@/components/TaskCard";
 import { TaskDetailPanel } from "@/components/TaskDetailPanel";
-import { TaskFilters } from "@/components/TaskFilters";
+import { TopFilters } from "@/components/TopFilters";
+import { CategoryFilters } from "@/components/CategoryFilters";
 import { mockTasks, Task } from "@/data/mockTasks";
 import { toast } from "sonner";
 
@@ -70,7 +71,7 @@ export default function AllTasks() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-10">
+      <header className="bg-card border-b border-border">
         <div className="container mx-auto px-4 py-4">
           <h1 className="text-2xl font-bold text-foreground">Browse Available Tasks</h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -79,19 +80,25 @@ export default function AllTasks() {
         </div>
       </header>
 
+      {/* Top Filters Panel */}
+      <div className="sticky top-0 z-10">
+        <TopFilters
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          selectedCity={selectedCity}
+          onCityChange={setSelectedCity}
+          priceSort={priceSort}
+          onPriceSortChange={setPriceSort}
+          urgentOnly={urgentOnly}
+          onUrgentToggle={() => setUrgentOnly(!urgentOnly)}
+        />
+      </div>
+
       <div className="container mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Panel - Filters */}
+          {/* Left Panel - Category Filters */}
           <aside className="lg:col-span-3">
-            <TaskFilters
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-              selectedCity={selectedCity}
-              onCityChange={setSelectedCity}
-              priceSort={priceSort}
-              onPriceSortChange={setPriceSort}
-              urgentOnly={urgentOnly}
-              onUrgentToggle={() => setUrgentOnly(!urgentOnly)}
+            <CategoryFilters
               selectedCategories={selectedCategories}
               onCategoryToggle={handleCategoryToggle}
             />
