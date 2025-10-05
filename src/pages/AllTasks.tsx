@@ -1,14 +1,22 @@
 import { useState, useMemo } from "react";
+import {
+  Box,
+  Container,
+  Typography,
+  Paper,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { TaskCard } from "@/components/TaskCard";
 import { TaskDetailPanel } from "@/components/TaskDetailPanel";
 import { TopFilters } from "@/components/TopFilters";
 import { CategoryFilters } from "@/components/CategoryFilters";
 import { mockTasks, Task } from "@/data/mockTasks";
-import { toast } from "sonner";
 
 export default function AllTasks() {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [appliedTasks, setAppliedTasks] = useState<Set<string>>(new Set());
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
@@ -19,7 +27,7 @@ export default function AllTasks() {
 
   const handleApply = (taskId: string) => {
     setAppliedTasks(prev => new Set(prev).add(taskId));
-    toast.success("Application submitted successfully!");
+    setSnackbarOpen(true);
   };
 
   const handleCategoryToggle = (category: string) => {
@@ -69,19 +77,21 @@ export default function AllTasks() {
   }, [searchQuery, selectedCity, urgentOnly, selectedCategories, priceSort]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
       {/* Header */}
-      <header className="bg-card border-b border-border">
-        <div className="container mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold text-foreground">Browse Available Tasks</h1>
-          <p className="text-sm text-muted-foreground mt-1">
+      <Paper elevation={0} sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Container maxWidth="xl" sx={{ py: 2 }}>
+          <Typography variant="h4" fontWeight={700}>
+            Browse Available Tasks
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
             {filteredTasks.length} {filteredTasks.length === 1 ? 'task' : 'tasks'} available
-          </p>
-        </div>
-      </header>
+          </Typography>
+        </Container>
+      </Paper>
 
       {/* Top Filters Panel */}
-      <div className="sticky top-0 z-10">
+      <Box sx={{ position: "sticky", top: 0, zIndex: 10 }}>
         <TopFilters
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
@@ -92,27 +102,31 @@ export default function AllTasks() {
           urgentOnly={urgentOnly}
           onUrgentToggle={() => setUrgentOnly(!urgentOnly)}
         />
-      </div>
+      </Box>
 
-      <div className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <Container maxWidth="xl" sx={{ py: 3 }}>
+        <Box sx={{ display: "flex", gap: 3 }}>
           {/* Left Panel - Category Filters */}
-          <aside className="lg:col-span-3">
+          <Box sx={{ width: { xs: "100%", lg: "25%" }, display: { xs: "none", lg: "block" } }}>
             <CategoryFilters
               selectedCategories={selectedCategories}
               onCategoryToggle={handleCategoryToggle}
             />
-          </aside>
+          </Box>
 
           {/* Center Panel - Task Cards */}
-          <main className="lg:col-span-5">
+          <Box sx={{ width: { xs: "100%", lg: "41.666%" }, flexGrow: 1 }}>
             {filteredTasks.length === 0 ? (
-              <div className="bg-card p-12 rounded-lg border border-border text-center">
-                <p className="text-muted-foreground">No tasks found matching your criteria.</p>
-                <p className="text-sm text-muted-foreground mt-2">Try adjusting your filters.</p>
-              </div>
+              <Paper sx={{ p: 6, textAlign: "center" }}>
+                <Typography color="text.secondary">
+                  No tasks found matching your criteria.
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                  Try adjusting your filters.
+                </Typography>
+              </Paper>
             ) : (
-              <div className="grid grid-cols-1 gap-4">
+              <Box display="flex" flexDirection="column" gap={2}>
                 {filteredTasks.map(task => (
                   <TaskCard
                     key={task.id}
@@ -123,20 +137,40 @@ export default function AllTasks() {
                     isApplied={appliedTasks.has(task.id)}
                   />
                 ))}
-              </div>
+              </Box>
             )}
-          </main>
+          </Box>
 
           {/* Right Panel - Task Detail */}
-          <aside className="lg:col-span-4 lg:sticky lg:top-24 lg:h-[calc(100vh-120px)]">
-            <TaskDetailPanel
-              task={selectedTask}
-              onApply={() => selectedTask && handleApply(selectedTask.id)}
-              isApplied={selectedTask ? appliedTasks.has(selectedTask.id) : false}
-            />
-          </aside>
-        </div>
-      </div>
-    </div>
+          <Box sx={{ width: { xs: "100%", lg: "33.333%" }, display: { xs: "none", lg: "block" } }}>
+            <Box
+              sx={{
+                position: { lg: "sticky" },
+                top: { lg: 96 },
+                height: { lg: "calc(100vh - 120px)" },
+              }}
+            >
+              <TaskDetailPanel
+                task={selectedTask}
+                onApply={() => selectedTask && handleApply(selectedTask.id)}
+                isApplied={selectedTask ? appliedTasks.has(selectedTask.id) : false}
+              />
+            </Box>
+          </Box>
+        </Box>
+      </Container>
+
+      {/* Snackbar for success message */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: "100%" }}>
+          Application submitted successfully!
+        </Alert>
+      </Snackbar>
+    </Box>
   );
 }

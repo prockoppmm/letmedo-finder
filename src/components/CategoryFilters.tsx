@@ -1,7 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { X } from "lucide-react";
+import { Button, Chip, Box, Paper, Typography } from "@mui/material";
+import { Close as XIcon } from "@mui/icons-material";
 import { categories } from "@/data/mockTasks";
 
 interface CategoryFiltersProps {
@@ -14,48 +12,48 @@ export function CategoryFilters({
   onCategoryToggle,
 }: CategoryFiltersProps) {
   return (
-    <div className="bg-card p-4 rounded-lg border border-border">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-foreground">Categories</h3>
+    <Paper sx={{ p: 2 }}>
+      <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+        <Typography variant="h6" fontWeight={600}>
+          Categories
+        </Typography>
         {selectedCategories.length > 0 && (
           <Button
-            variant="ghost"
-            size="sm"
+            size="small"
+            startIcon={<XIcon />}
             onClick={() => selectedCategories.forEach(onCategoryToggle)}
-            className="h-8 text-xs"
           >
-            <X className="h-3 w-3 mr-1" />
             Clear
           </Button>
         )}
-      </div>
+      </Box>
 
-      <ScrollArea className="h-[calc(100vh-280px)] pr-4">
-        <div className="space-y-4">
+      <Box sx={{ maxHeight: "calc(100vh - 280px)", overflowY: "auto", pr: 1 }}>
+        <Box display="flex" flexDirection="column" gap={3}>
           {categories.map((group) => (
-            <div key={group.group}>
-              <h4 className="font-medium text-sm text-foreground mb-2">
+            <Box key={group.group}>
+              <Typography variant="subtitle2" fontWeight={500} mb={1}>
                 {group.group}
-              </h4>
-              <div className="flex flex-wrap gap-2">
+              </Typography>
+              <Box display="flex" flexWrap="wrap" gap={1}>
                 {group.items.map((category) => {
                   const isSelected = selectedCategories.includes(category);
                   return (
-                    <Badge
+                    <Chip
                       key={category}
-                      variant={isSelected ? "default" : "outline"}
-                      className="cursor-pointer hover:opacity-80 transition-opacity"
+                      label={category}
+                      variant={isSelected ? "filled" : "outlined"}
+                      color={isSelected ? "primary" : "default"}
                       onClick={() => onCategoryToggle(category)}
-                    >
-                      {category}
-                    </Badge>
+                      sx={{ cursor: "pointer" }}
+                    />
                   );
                 })}
-              </div>
-            </div>
+              </Box>
+            </Box>
           ))}
-        </div>
-      </ScrollArea>
-    </div>
+        </Box>
+      </Box>
+    </Paper>
   );
 }

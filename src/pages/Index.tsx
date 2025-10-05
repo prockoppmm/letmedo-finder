@@ -1,58 +1,120 @@
-import { Button } from "@/components/ui/button";
+import { Box, Container, Typography, Button, Paper } from "@mui/material";
 import { Link } from "react-router-dom";
-import { Search, MapPin, DollarSign } from "lucide-react";
+import {
+  Search as SearchIcon,
+  LocationOn as MapPinIcon,
+  AttachMoney as DollarSignIcon,
+} from "@mui/icons-material";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <h1 className="text-5xl font-bold text-foreground mb-4">
-            Welcome to <span className="text-primary">LetMeDo</span>
-          </h1>
-          <p className="text-xl text-muted-foreground mb-8">
+    <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+      <Container maxWidth="lg" sx={{ py: 8 }}>
+        <Box textAlign="center" maxWidth={768} mx="auto" mb={6}>
+          <Typography variant="h2" fontWeight={700} gutterBottom>
+            Welcome to <Box component="span" color="primary.main">LetMeDo</Box>
+          </Typography>
+          <Typography variant="h5" color="text.secondary" paragraph>
             Connect with skilled taskers in your area. Get things done, or earn money by helping others.
-          </p>
-          <Link to="/all-tasks">
-            <Button size="lg" className="text-lg px-8">
-              Browse Available Tasks
-            </Button>
-          </Link>
-        </div>
+          </Typography>
+          <Button
+            component={Link}
+            to="/all-tasks"
+            variant="contained"
+            size="large"
+            sx={{ mt: 2, px: 4 }}
+          >
+            Browse Available Tasks
+          </Button>
+        </Box>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mt-16">
-          <div className="bg-card p-6 rounded-lg border border-border text-center">
-            <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="h-8 w-8 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Find Tasks</h3>
-            <p className="text-muted-foreground">
+        <Box 
+          sx={{ 
+            display: "grid", 
+            gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" },
+            gap: 4,
+            maxWidth: 960,
+            mx: "auto",
+            mt: 8
+          }}
+        >
+          <Paper sx={{ p: 3, textAlign: "center", height: "100%" }}>
+            <Box
+              sx={{
+                bgcolor: "primary.light",
+                opacity: 0.2,
+                width: 64,
+                height: 64,
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                mx: "auto",
+                mb: 2,
+              }}
+            >
+              <SearchIcon sx={{ fontSize: 32, color: "primary.main", opacity: 5 }} />
+            </Box>
+            <Typography variant="h5" fontWeight={600} gutterBottom>
+              Find Tasks
+            </Typography>
+            <Typography color="text.secondary">
               Browse hundreds of available tasks in various categories
-            </p>
-          </div>
+            </Typography>
+          </Paper>
 
-          <div className="bg-card p-6 rounded-lg border border-border text-center">
-            <div className="bg-secondary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <MapPin className="h-8 w-8 text-secondary" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Local & Convenient</h3>
-            <p className="text-muted-foreground">
+          <Paper sx={{ p: 3, textAlign: "center", height: "100%" }}>
+            <Box
+              sx={{
+                bgcolor: "secondary.light",
+                opacity: 0.2,
+                width: 64,
+                height: 64,
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                mx: "auto",
+                mb: 2,
+              }}
+            >
+              <MapPinIcon sx={{ fontSize: 32, color: "secondary.main", opacity: 5 }} />
+            </Box>
+            <Typography variant="h5" fontWeight={600} gutterBottom>
+              Local & Convenient
+            </Typography>
+            <Typography color="text.secondary">
               Find tasks near you with our location-based filtering
-            </p>
-          </div>
+            </Typography>
+          </Paper>
 
-          <div className="bg-card p-6 rounded-lg border border-border text-center">
-            <div className="bg-success/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <DollarSign className="h-8 w-8 text-success" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Earn Money</h3>
-            <p className="text-muted-foreground">
+          <Paper sx={{ p: 3, textAlign: "center", height: "100%" }}>
+            <Box
+              sx={{
+                bgcolor: "success.light",
+                opacity: 0.2,
+                width: 64,
+                height: 64,
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                mx: "auto",
+                mb: 2,
+              }}
+            >
+              <DollarSignIcon sx={{ fontSize: 32, color: "success.main", opacity: 5 }} />
+            </Box>
+            <Typography variant="h5" fontWeight={600} gutterBottom>
+              Earn Money
+            </Typography>
+            <Typography color="text.secondary">
               Apply for tasks and get paid for your skills and time
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+            </Typography>
+          </Paper>
+        </Box>
+      </Container>
+    </Box>
   );
 };
 

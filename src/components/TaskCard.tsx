@@ -1,9 +1,19 @@
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, DollarSign, AlertCircle } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardActions,
+  Chip,
+  Button,
+  Typography,
+  Box,
+} from "@mui/material";
+import {
+  LocationOn as MapPinIcon,
+  CalendarToday as CalendarIcon,
+  AttachMoney as DollarSignIcon,
+  Warning as AlertCircleIcon,
+} from "@mui/icons-material";
 import { Task } from "@/data/mockTasks";
-import { cn } from "@/lib/utils";
 
 interface TaskCardProps {
   task: Task;
@@ -17,64 +27,81 @@ export function TaskCard({ task, isSelected, onSelect, onApply, isApplied }: Tas
   const getStatusColor = (status: Task["status"]) => {
     switch (status) {
       case "open":
-        return "bg-success text-success-foreground";
+        return "success";
       case "assigned":
-        return "bg-warning text-warning-foreground";
+        return "warning";
       case "completed":
-        return "bg-muted text-muted-foreground";
+        return "default";
     }
   };
 
   return (
     <Card
-      className={cn(
-        "p-4 cursor-pointer transition-all hover:shadow-md",
-        isSelected && "ring-2 ring-primary shadow-lg"
-      )}
       onClick={onSelect}
+      sx={{
+        cursor: "pointer",
+        border: isSelected ? 2 : 0,
+        borderColor: isSelected ? "primary.main" : "transparent",
+        transition: "all 0.3s",
+        "&:hover": {
+          boxShadow: 3,
+        },
+      }}
     >
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex-1">
-          <div className="flex items-start gap-2 mb-2">
-            <h3 className="font-semibold text-foreground line-clamp-2 flex-1">
-              {task.title}
-            </h3>
-            {task.isUrgent && (
-              <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-            )}
-          </div>
-          <Badge className={cn("text-xs", getStatusColor(task.status))}>
-            {task.status.toUpperCase()}
-          </Badge>
-        </div>
-      </div>
+      <CardContent>
+        <Box display="flex" alignItems="flex-start" justifyContent="space-between" mb={2}>
+          <Box flex={1}>
+            <Box display="flex" alignItems="flex-start" gap={1} mb={1}>
+              <Typography variant="h6" component="h3" sx={{ flex: 1, lineHeight: 1.3 }}>
+                {task.title}
+              </Typography>
+              {task.isUrgent && (
+                <AlertCircleIcon color="error" sx={{ flexShrink: 0, mt: 0.5 }} />
+              )}
+            </Box>
+            <Chip
+              label={task.status.toUpperCase()}
+              color={getStatusColor(task.status) as any}
+              size="small"
+            />
+          </Box>
+        </Box>
 
-      <div className="space-y-2 mb-4">
-        <div className="flex items-center text-sm text-muted-foreground">
-          <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
-          <span className="truncate">{task.location}</span>
-        </div>
-        <div className="flex items-center text-sm text-muted-foreground">
-          <Calendar className="h-4 w-4 mr-2 flex-shrink-0" />
-          <span>{new Date(task.date).toLocaleDateString()}</span>
-        </div>
-        <div className="flex items-center text-sm font-semibold text-foreground">
-          <DollarSign className="h-4 w-4 mr-2 flex-shrink-0" />
-          <span>{task.budget} {task.currency}</span>
-        </div>
-      </div>
+        <Box display="flex" flexDirection="column" gap={1} mb={2}>
+          <Box display="flex" alignItems="center" color="text.secondary">
+            <MapPinIcon sx={{ fontSize: 18, mr: 1 }} />
+            <Typography variant="body2" noWrap>
+              {task.location}
+            </Typography>
+          </Box>
+          <Box display="flex" alignItems="center" color="text.secondary">
+            <CalendarIcon sx={{ fontSize: 18, mr: 1 }} />
+            <Typography variant="body2">
+              {new Date(task.date).toLocaleDateString()}
+            </Typography>
+          </Box>
+          <Box display="flex" alignItems="center">
+            <DollarSignIcon sx={{ fontSize: 18, mr: 1 }} />
+            <Typography variant="body2" fontWeight={600}>
+              {task.budget} {task.currency}
+            </Typography>
+          </Box>
+        </Box>
+      </CardContent>
 
-      <Button
-        className="w-full"
-        variant={isApplied ? "outline" : "default"}
-        disabled={isApplied || task.status !== "open"}
-        onClick={(e) => {
-          e.stopPropagation();
-          onApply();
-        }}
-      >
-        {isApplied ? "Applied" : "Apply Now"}
-      </Button>
+      <CardActions>
+        <Button
+          fullWidth
+          variant={isApplied ? "outlined" : "contained"}
+          disabled={isApplied || task.status !== "open"}
+          onClick={(e) => {
+            e.stopPropagation();
+            onApply();
+          }}
+        >
+          {isApplied ? "Applied" : "Apply Now"}
+        </Button>
+      </CardActions>
     </Card>
   );
 }

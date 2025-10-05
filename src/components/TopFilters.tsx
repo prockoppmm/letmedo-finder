@@ -1,13 +1,16 @@
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
+  TextField,
+  Button,
   Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Search, AlertCircle } from "lucide-react";
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Box,
+  Paper,
+  Container,
+  InputAdornment,
+} from "@mui/material";
+import { Search as SearchIcon, Warning as AlertCircleIcon } from "@mui/icons-material";
 
 interface TopFiltersProps {
   searchQuery: string;
@@ -33,55 +36,73 @@ export function TopFilters({
   const cities = ["All Cities", "New York", "Los Angeles", "Chicago", "Houston"];
 
   return (
-    <div className="bg-card border-b border-border">
-      <div className="container mx-auto px-4 py-4">
-        <div className="space-y-4">
-          <div className="relative max-w-3xl mx-auto">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input
+    <Paper elevation={0} sx={{ borderBottom: 1, borderColor: "divider" }}>
+      <Container maxWidth="xl" sx={{ py: 2 }}>
+        <Box display="flex" flexDirection="column" gap={2}>
+          <Box maxWidth={768} mx="auto" width="100%">
+            <TextField
+              fullWidth
               placeholder="Search tasks by title or keywords..."
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="pl-12 h-12 text-base"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+              size="medium"
             />
-          </div>
+          </Box>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 max-w-4xl mx-auto">
-            <Select value={selectedCity} onValueChange={onCityChange}>
-              <SelectTrigger className="h-10">
-                <SelectValue placeholder="Select location" />
-              </SelectTrigger>
-              <SelectContent>
+          <Box
+            display="grid"
+            gridTemplateColumns={{ xs: "1fr", md: "repeat(3, 1fr)" }}
+            gap={2}
+            maxWidth={896}
+            mx="auto"
+            width="100%"
+          >
+            <FormControl fullWidth size="small">
+              <InputLabel>Location</InputLabel>
+              <Select
+                value={selectedCity}
+                label="Location"
+                onChange={(e) => onCityChange(e.target.value)}
+              >
                 {cities.map((city) => (
-                  <SelectItem key={city} value={city}>
+                  <MenuItem key={city} value={city}>
                     {city}
-                  </SelectItem>
+                  </MenuItem>
                 ))}
-              </SelectContent>
-            </Select>
+              </Select>
+            </FormControl>
 
-            <Select value={priceSort} onValueChange={onPriceSortChange}>
-              <SelectTrigger className="h-10">
-                <SelectValue placeholder="Sort by price" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">No sorting</SelectItem>
-                <SelectItem value="asc">Price: Low to High</SelectItem>
-                <SelectItem value="desc">Price: High to Low</SelectItem>
-              </SelectContent>
-            </Select>
+            <FormControl fullWidth size="small">
+              <InputLabel>Sort by Price</InputLabel>
+              <Select
+                value={priceSort}
+                label="Sort by Price"
+                onChange={(e) => onPriceSortChange(e.target.value)}
+              >
+                <MenuItem value="none">No sorting</MenuItem>
+                <MenuItem value="asc">Price: Low to High</MenuItem>
+                <MenuItem value="desc">Price: High to Low</MenuItem>
+              </Select>
+            </FormControl>
 
             <Button
-              variant={urgentOnly ? "default" : "outline"}
+              fullWidth
+              variant={urgentOnly ? "contained" : "outlined"}
               onClick={onUrgentToggle}
-              className="w-full h-10"
+              startIcon={<AlertCircleIcon />}
             >
-              <AlertCircle className="h-4 w-4 mr-2" />
               {urgentOnly ? "Showing Urgent" : "All Tasks"}
             </Button>
-          </div>
-        </div>
-      </div>
-    </div>
+          </Box>
+        </Box>
+      </Container>
+    </Paper>
   );
 }

@@ -1,10 +1,21 @@
+import {
+  Card,
+  CardContent,
+  Chip,
+  Button,
+  Typography,
+  Box,
+  Avatar,
+  Paper,
+} from "@mui/material";
+import {
+  LocationOn as MapPinIcon,
+  CalendarToday as CalendarIcon,
+  AttachMoney as DollarSignIcon,
+  Warning as AlertCircleIcon,
+  Person as UserIcon,
+} from "@mui/icons-material";
 import { Task } from "@/data/mockTasks";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { MapPin, Calendar, DollarSign, AlertCircle, User } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface TaskDetailPanelProps {
   task: Task | null;
@@ -15,11 +26,13 @@ interface TaskDetailPanelProps {
 export function TaskDetailPanel({ task, onApply, isApplied }: TaskDetailPanelProps) {
   if (!task) {
     return (
-      <Card className="h-full p-8 flex items-center justify-center">
-        <div className="text-center text-muted-foreground">
-          <MapPin className="h-12 w-12 mx-auto mb-3 opacity-50" />
-          <p>Select a task to view details</p>
-        </div>
+      <Card sx={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <CardContent>
+          <Box textAlign="center" color="text.secondary">
+            <MapPinIcon sx={{ fontSize: 48, mb: 2, opacity: 0.5 }} />
+            <Typography>Select a task to view details</Typography>
+          </Box>
+        </CardContent>
       </Card>
     );
   }
@@ -27,105 +40,141 @@ export function TaskDetailPanel({ task, onApply, isApplied }: TaskDetailPanelPro
   const getStatusColor = (status: Task["status"]) => {
     switch (status) {
       case "open":
-        return "bg-success text-success-foreground";
+        return "success";
       case "assigned":
-        return "bg-warning text-warning-foreground";
+        return "warning";
       case "completed":
-        return "bg-muted text-muted-foreground";
+        return "default";
     }
   };
 
   return (
-    <Card className="h-full overflow-auto">
-      <div className="p-6 space-y-6">
-        {/* Header */}
-        <div>
-          <div className="flex items-start justify-between mb-3">
-            <h2 className="text-2xl font-bold text-foreground pr-4">{task.title}</h2>
-            {task.isUrgent && (
-              <Badge variant="destructive" className="flex items-center gap-1 flex-shrink-0">
-                <AlertCircle className="h-3 w-3" />
-                Urgent
-              </Badge>
-            )}
-          </div>
-          <Badge className={cn("text-xs", getStatusColor(task.status))}>
-            {task.status.toUpperCase()}
-          </Badge>
-        </div>
+    <Card sx={{ height: "100%", overflow: "auto" }}>
+      <CardContent sx={{ p: 3 }}>
+        <Box display="flex" flexDirection="column" gap={3}>
+          {/* Header */}
+          <Box>
+            <Box display="flex" alignItems="flex-start" justifyContent="space-between" mb={2}>
+              <Typography variant="h4" component="h2" sx={{ pr: 2 }}>
+                {task.title}
+              </Typography>
+              {task.isUrgent && (
+                <Chip
+                  icon={<AlertCircleIcon />}
+                  label="Urgent"
+                  color="error"
+                  size="small"
+                  sx={{ flexShrink: 0 }}
+                />
+              )}
+            </Box>
+            <Chip
+              label={task.status.toUpperCase()}
+              color={getStatusColor(task.status) as any}
+              size="small"
+            />
+          </Box>
 
-        {/* Task Info */}
-        <div className="space-y-3">
-          <div className="flex items-center text-foreground">
-            <MapPin className="h-5 w-5 mr-3 text-primary" />
-            <div>
-              <p className="font-medium">{task.location}</p>
-              <p className="text-sm text-muted-foreground">{task.city}</p>
-            </div>
-          </div>
-          <div className="flex items-center text-foreground">
-            <Calendar className="h-5 w-5 mr-3 text-primary" />
-            <span>{new Date(task.date).toLocaleDateString('en-US', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}</span>
-          </div>
-          <div className="flex items-center text-foreground">
-            <DollarSign className="h-5 w-5 mr-3 text-primary" />
-            <span className="text-xl font-bold">{task.budget} {task.currency}</span>
-          </div>
-        </div>
+          {/* Task Info */}
+          <Box display="flex" flexDirection="column" gap={2}>
+            <Box display="flex" alignItems="center">
+              <MapPinIcon color="primary" sx={{ mr: 2 }} />
+              <Box>
+                <Typography fontWeight={500}>{task.location}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {task.city}
+                </Typography>
+              </Box>
+            </Box>
+            <Box display="flex" alignItems="center">
+              <CalendarIcon color="primary" sx={{ mr: 2 }} />
+              <Typography>
+                {new Date(task.date).toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </Typography>
+            </Box>
+            <Box display="flex" alignItems="center">
+              <DollarSignIcon color="primary" sx={{ mr: 2 }} />
+              <Typography variant="h5" fontWeight={700}>
+                {task.budget} {task.currency}
+              </Typography>
+            </Box>
+          </Box>
 
-        {/* Description */}
-        <div>
-          <h3 className="font-semibold text-foreground mb-2">Description</h3>
-          <p className="text-muted-foreground leading-relaxed">{task.description}</p>
-        </div>
+          {/* Description */}
+          <Box>
+            <Typography variant="h6" gutterBottom fontWeight={600}>
+              Description
+            </Typography>
+            <Typography color="text.secondary" sx={{ lineHeight: 1.7 }}>
+              {task.description}
+            </Typography>
+          </Box>
 
-        {/* Map Placeholder */}
-        <div>
-          <h3 className="font-semibold text-foreground mb-2">Location</h3>
-          <div className="bg-accent rounded-lg overflow-hidden h-48 flex items-center justify-center border border-border">
-            <div className="text-center text-muted-foreground">
-              <MapPin className="h-12 w-12 mx-auto mb-2 text-primary" />
-              <p className="text-sm">Map View</p>
-              <p className="text-xs">{task.coordinates.lat.toFixed(4)}, {task.coordinates.lng.toFixed(4)}</p>
-            </div>
-          </div>
-        </div>
+          {/* Map Placeholder */}
+          <Box>
+            <Typography variant="h6" gutterBottom fontWeight={600}>
+              Location
+            </Typography>
+            <Paper
+              variant="outlined"
+              sx={{
+                height: 192,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                bgcolor: "action.hover",
+              }}
+            >
+              <Box textAlign="center" color="text.secondary">
+                <MapPinIcon color="primary" sx={{ fontSize: 48, mb: 1 }} />
+                <Typography variant="body2">Map View</Typography>
+                <Typography variant="caption">
+                  {task.coordinates.lat.toFixed(4)}, {task.coordinates.lng.toFixed(4)}
+                </Typography>
+              </Box>
+            </Paper>
+          </Box>
 
-        {/* Poster Info */}
-        <div>
-          <h3 className="font-semibold text-foreground mb-3">Posted By</h3>
-          <div className="flex items-center gap-3 p-3 bg-accent rounded-lg">
-            <Avatar className="h-12 w-12">
-              <AvatarFallback className="bg-primary text-primary-foreground">
-                {task.posterInitials}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="font-medium text-foreground">{task.posterName}</p>
-              <p className="text-sm text-muted-foreground flex items-center gap-1">
-                <User className="h-3 w-3" />
-                Task Poster
-              </p>
-            </div>
-          </div>
-        </div>
+          {/* Poster Info */}
+          <Box>
+            <Typography variant="h6" gutterBottom fontWeight={600}>
+              Posted By
+            </Typography>
+            <Paper variant="outlined" sx={{ p: 2, bgcolor: "action.hover" }}>
+              <Box display="flex" alignItems="center" gap={2}>
+                <Avatar sx={{ bgcolor: "primary.main", width: 48, height: 48 }}>
+                  {task.posterInitials}
+                </Avatar>
+                <Box>
+                  <Typography fontWeight={500}>{task.posterName}</Typography>
+                  <Box display="flex" alignItems="center" gap={0.5}>
+                    <UserIcon sx={{ fontSize: 14 }} />
+                    <Typography variant="body2" color="text.secondary">
+                      Task Poster
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+            </Paper>
+          </Box>
 
-        {/* Apply Button */}
-        <Button
-          className="w-full"
-          size="lg"
-          variant={isApplied ? "outline" : "default"}
-          disabled={isApplied || task.status !== "open"}
-          onClick={onApply}
-        >
-          {isApplied ? "Applied" : task.status !== "open" ? "Not Available" : "Apply for This Task"}
-        </Button>
-      </div>
+          {/* Apply Button */}
+          <Button
+            fullWidth
+            size="large"
+            variant={isApplied ? "outlined" : "contained"}
+            disabled={isApplied || task.status !== "open"}
+            onClick={onApply}
+          >
+            {isApplied ? "Applied" : task.status !== "open" ? "Not Available" : "Apply for This Task"}
+          </Button>
+        </Box>
+      </CardContent>
     </Card>
   );
 }
